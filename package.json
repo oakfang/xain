@@ -1,0 +1,31 @@
+{
+  "name": "xain",
+  "version": "1.0.0",
+  "description": "Using ES2015 proxies to simplify observation and reaction",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oakfang/xain.git"
+  },
+  "keywords": [
+    "proxy",
+    "observe",
+    "observable",
+    "reactive"
+  ],
+  "author": "Alon Niv",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oakfang/xain/issues"
+  },
+  "homepage": "https://github.com/oakfang/xain#readme",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "devDependencies": {
+    "ava": "^0.14.0"
+  }
+}
