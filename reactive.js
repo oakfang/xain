@@ -27,7 +27,7 @@ function pipe(obs, prop) {
     return link(obs, obs => obs[prop]);
 }
 
-function reactive(obj) {
+function reactive(obj, batched=false) {
     return Object.keys(obj).reduce((result, key) => {
         const value = obj[key];
         if (typeof value === 'object' && SYM_LINK in value) {
@@ -36,7 +36,7 @@ function reactive(obj) {
             result[key] = value;
         }
         return result;
-    }, observable({}));
+    }, observable({}, batched));
 }
 
 
