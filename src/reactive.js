@@ -1,6 +1,6 @@
 'use strict';
 
-const {observe, observable} = require('./observable');
+import {observe, observable} from './observable';
 const SYM_LINK = Symbol('@@link');
 
 function recorder(obj, accesses) {
@@ -12,7 +12,7 @@ function recorder(obj, accesses) {
     })
 }
 
-function link(obs, callback) {
+export function link(obs, callback) {
     return {[SYM_LINK](target, key) {
         let _acs = [];
         target[key] = callback(recorder(obs, _acs));
@@ -23,11 +23,11 @@ function link(obs, callback) {
     }};
 }
 
-function pipe(obs, prop) {
+export function pipe(obs, prop) {
     return link(obs, obs => obs[prop]);
 }
 
-function reactive(obj, batched=false) {
+export function reactive(obj, batched=false) {
     return Object.keys(obj).reduce((result, key) => {
         const value = obj[key];
         if (typeof value === 'object' && SYM_LINK in value) {
@@ -38,6 +38,3 @@ function reactive(obj, batched=false) {
         return result;
     }, observable({}, batched));
 }
-
-
-module.exports = {reactive, link, pipe};

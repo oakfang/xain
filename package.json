@@ -1,10 +1,11 @@
 {
   "name": "xain",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Using ES2015 proxies to simplify observation and reaction",
   "main": "index.js",
   "scripts": {
-    "test": "ava"
+    "build": "rollup -c",
+    "test": "npm run build && ava"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
     "node": ">=6.0.0"
   },
   "devDependencies": {
-    "ava": "^0.14.0"
+    "ava": "^0.14.0",
+    "rollup": "^0.26.2"
   }
 }

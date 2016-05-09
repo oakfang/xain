@@ -17,7 +17,7 @@ function mergeChanges(changes) {
     return result;
 }
 
-function observable(object, batch=false) {
+export function observable(object, batch=false) {
     let listeners = new Set();
     let batched = [];
 
@@ -58,8 +58,6 @@ function observable(object, batch=false) {
     });
 }
 
-function observe(obs, callback) {
+export function observe(obs, callback) {
     return obs[SYM_OBSERVE](callback);
 }
-
-module.exports = {observable, observe};
