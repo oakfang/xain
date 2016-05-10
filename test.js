@@ -162,10 +162,11 @@ test('Stream observations', t => {
         x: 3,
         y: 6
     });
-    const str = x.stream(o)
-                 .filter(key => key === 'x')
-                 .map((key, nval, oval) => oval)
-                 .reduce((acc, val) => acc + val, 0);
+    let str = x.stream(o)
+                .filter(key => key === 'x');
+    x.observe(str, k => t.is(k, 'x'));
+    str = str.map((key, nval, oval) => oval)
+             .reduce((acc, val) => acc + val, 0);
     const expected = [3, 4, 2];
     let actual = [];
     x.observe(str, v => actual.push(v));
@@ -175,4 +176,27 @@ test('Stream observations', t => {
     t.is(expected[0], actual[0]);
     t.is(expected[1], actual[1]);
     t.is(expected[2], actual[2]);
+});
+
+test('Merge streams for predictable results', t => {
+    const o = x.observable({
+        x: 3,
+        y: 6
+    });
+    const xs = x.stream(o).filter(k => k === 'x').map((k, v) => v);
+    const ys = x.stream(o).filter(k => k === 'y').map((k, v) => -v);
+    let results = [];
+    x.observe(xs.merge(ys), v => results.push(v));
+    o.x = 1;
+    o.y = 9;
+    o.y = 4;
+    o.x = -2;
+    o.x = 5;
+    o.y = 2;
+    t.is(results[0], 1);
+    t.is(results[1], -9);
+    t.is(results[2], -4);
+    t.is(results[3], -2);
+    t.is(results[4], 5);
+    t.is(results[5], -2);
 });

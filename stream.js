@@ -3,6 +3,8 @@
 const {observable, observe, SYM_OBSERVE} = require('./observable');
 
 const TRIGGER_SYM = Symbol('@@trigger');
+const REWIRE_SYM = Symbol('@@rewire');
+
 
 function stream(obs) {
     let listeners = new Set();
@@ -10,26 +12,29 @@ function stream(obs) {
 
     const $stream = {
         filter(predicate) {
-            unobserve();
-            unobserve = observe(obs, (...args) => {
-                if (predicate(...args)) $stream[TRIGGER_SYM](...args);
+            const str = stream($stream)[REWIRE_SYM]();
+            observe($stream, (...args) => {
+                if (predicate(...args)) str[TRIGGER_SYM](...args);
             });
-            return stream($stream);
+            return str;
         },
         map(mapper) {
-            unobserve();
-            unobserve = observe(obs, (...args) => {
-                $stream[TRIGGER_SYM](mapper(...args));
-            });
-            return stream($stream);
+            const str = stream($stream)[REWIRE_SYM]();
+            observe($stream, (...args) => str[TRIGGER_SYM](mapper(...args)));
+            return str;
         },
         reduce(reducer, start) {
-            unobserve();
-            unobserve = observe(obs, (...args) => {
+            const str = stream($stream)[REWIRE_SYM]();
+            observe($stream, (...args) => {
                 start = reducer(start, ...args);
-                $stream[TRIGGER_SYM](start);
+                str[TRIGGER_SYM](start);
             });
-            return stream($stream);
+            return str;
+        },
+        merge(otherStream) {
+            const str = stream($stream);
+            observe(otherStream, (...args) => str[TRIGGER_SYM](...args));
+            return str;
         },
         [SYM_OBSERVE](callback) {
             listeners.add(callback);
@@ -39,6 +44,10 @@ function stream(obs) {
             for (let listener of listeners) {
                 listener(...args);
             }
+        },
+        [REWIRE_SYM]() {
+            unobserve();
+            return $stream;
         }
     };
 
