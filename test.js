@@ -33,6 +33,7 @@ test('Batched observable', async t => {
     t.is(count, 0);
     o.foo = 2;
     o.foo = 2;
+    o.foo = 3;
     t.is(count, 0);
     process.nextTick(() => {
         t.is(count, 1);
@@ -51,7 +52,8 @@ test('Reactive linking', t => {
         z: x.link(o, ({x, y}) => {
             counter += 1;
             return x + y;
-        })
+        }),
+        a: 2
     });
     t.is(r.x, 3);
     t.is(r.y, 6);
@@ -67,6 +69,9 @@ test('Reactive linking', t => {
     t.is(r.y, 6);
     t.is(r.z, 11);
     t.is(counter, 2);
+    t.is(r.a, 2);
+    r.a = 4;
+    t.is(r.a, 4);
 });
 
 test('Stream filter', t => {
