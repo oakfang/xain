@@ -62,4 +62,4 @@ function observe(obs, callback) {
     return obs[SYM_OBSERVE](callback);
 }
 
-module.exports = {observable, observe};
+module.exports = {observable, observe, SYM_OBSERVE};

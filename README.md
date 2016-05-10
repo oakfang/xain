@@ -89,3 +89,27 @@ t.is(counter, 2);
 **Note:** a `link` function must always `get` every single dependency every time it runs.
 The easiest way is to destructure the observable (the actual argument passed to the link function)
 into the properties the link depends upon.
+
+### Observable streams
+
+```js
+const x = require('xain');
+
+const o = x.observable({
+    x: 3,
+    y: 6
+});
+const str = x.stream(o)
+             .filter(key => key === 'x')
+             .map((key, nval, oval) => oval)
+             .reduce((acc, val) => acc + val, 0);
+const expected = [3, 4, 2];
+let actual = [];
+x.observe(str, v => actual.push(v));
+o.x = 1;
+o.x = -2;
+o.x = 5;
+t.is(expected[0], actual[0]);
+t.is(expected[1], actual[1]);
+t.is(expected[2], actual[2]);
+```

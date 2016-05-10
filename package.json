@@ -1,6 +1,6 @@
 {
   "name": "xain",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Using ES2015 proxies to simplify observation and reaction",
   "main": "index.js",
   "scripts": {
