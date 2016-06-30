@@ -6,7 +6,7 @@ const SYM_LINK = Symbol('@@link');
 function recorder(obj, accesses) {
     return new Proxy(obj, {
         get(target, key) {
-            accesses.push(key);
+            accesses.add(key);
             return target[key];
         }
     })
@@ -14,9 +14,8 @@ function recorder(obj, accesses) {
 
 function link(obs, callback) {
     return {[SYM_LINK](target, key) {
-        let _acs = [];
-        target[key] = callback(recorder(obs, _acs));
-        const acs = new Set(_acs);
+        const acs = new Set();
+        target[key] = callback(recorder(obs, acs));
         observe(obs, prop => {
             if (acs.has(prop)) target[key] = callback(obs);
         });
@@ -39,5 +38,17 @@ function reactive(obj, batched=false) {
     }, observable({}, batched));
 }
 
+function viewOf(obs, spec, batched=false) {
+    return reactive(Object.keys(spec).reduce((result, key) => {
+        const value = spec[key];
+        if (typeof value === 'string') {
+            result[key] = pipe(obs, value);
+        } else {
+            result[key] = link(obs, value);
+        }
+        return result;
+    }, {}), batched);
+}
 
-module.exports = {reactive, link, pipe};
+
+module.exports = {viewOf, reactive, link, pipe};

@@ -200,3 +200,24 @@ test('Merge streams for predictable results', t => {
     t.is(results[4], 5);
     t.is(results[5], -2);
 });
+
+test('Super simple views', t => {
+    const userObject = x.observable({
+        firstName: 'Foo',
+        lastName: 'Bar',
+        age: 23
+    });
+    let i = 0;
+    const userView = x.viewOf(userObject, {
+        name({firstName, lastName}) {
+            i++;
+            return `${firstName} ${lastName}`;
+        },
+        age: 'age'
+    });
+    userObject.age = 24;
+    userObject.lastName = 'Barium';
+    t.is(i, 2);
+    t.is(userView.age, 24);
+    t.is(userView.name, 'Foo Barium');
+});

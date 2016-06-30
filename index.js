@@ -1,7 +1,7 @@
 'use strict';
 
 const {observable, observe} = require('./observable');
-const {reactive, link, pipe} = require('./reactive');
+const {reactive, link, pipe, viewOf} = require('./reactive');
 const stream = require('./stream');
 
 module.exports = {
@@ -10,5 +10,6 @@ module.exports = {
     reactive,
     link,
     pipe,
-    stream
+    stream,
+    viewOf
 };
